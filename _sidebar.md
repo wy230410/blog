@@ -1,3 +1,1 @@
-- [webAPI](./project/webAPI.md)
-- [Git](./project/Git.md)
 - [vue](./project/vue.md)
