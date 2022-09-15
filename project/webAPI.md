@@ -941,6 +941,8 @@ console.log(localStorage.getItem('age'))
 - arr.reverse() 反转数组
 - arr.sort 数组排序
 - arr.toStirng() 数组转字符串
+- arr.every(fun) 一个数组内的所有元素是否都通过fun函数测试
+- arr.some(fun) 一个数组内至少有一个元素通过fun函数测试
 
 # 正则
 

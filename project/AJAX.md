@@ -36,6 +36,33 @@ http的默认端口号为**80**,https的默认端口号为**443**
 
 **定义:** 它只是众多http请求中的一种.通过webAPI里的XMLHttpRequest()构造函数发送的请求我们就叫ajax请求
 
-**如何向服务器发送数据?**
+**如何向服务器发送数据? **(用哪一个由后端或领导决定)
 
-URL Headers Body (用哪一个由后端或领导决定)
+- url(2kb 兼容ie浏览器)
+    1. query(查询字符串)
+    2. params(动态参数)
+- hearders (512kb)
+    1. 数据格式通通都是键值对
+- data (通常是2MB以上,无限制,看服务器性能)
+    1. JSON格式字符串
+    2. 查询字符串
+    3. FormData对象
+
+**如何发送AJAX?**
+
+- 原生js: new XMLHttpRequest()
+
+- 插件: 
+
+    1. axios (目前最流行)
+
+        1. 什么时候执行then里的函数?
+
+            当响应状态码为2XX的时候
+
+        2. 什么时候执行catch里的函数?
+
+            当响应状态码为4xx或5xx的时候
+
+    2. jQuery
+
