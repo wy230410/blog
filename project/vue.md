@@ -310,6 +310,8 @@ vue使用的mvvm设计模式。**MVVM**是`Model-View-ViewModel`缩写，也就�
 1.  v-bind:属性名="vue变量"
 2.  :属性名="vue变量"
 
+**注意:** 当动态属性是图片或其他文件路径时, 那么不可以直接将路径的字符串作为动态属性变量的值, 需要使用import或者是require来进行引入
+
 **案例:**
 
 ```vue
@@ -505,3 +507,651 @@ export default {
 </style>
 ```
 
+**v-on按键修饰符**
+
+**语法:** @事件类型.按键=回调函数       // **按键必须为全小写**
+
+**案例:**
+
+```vue
+<template>
+  <input type="text" name="" id="" @keyup.enter="keyupFn">
+</template>
+
+<script>
+export default {
+  name:'keyDecoration',
+  methods:{
+    keyupFn(e){
+      console.log('事件对象',e)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# v-model双向绑定
+
+>把value属性和vue数据变量, 双向绑定到一起, 当其中一个值发生改变, 另一个的值也跟着改变.
+
+**语法:** v-mode='vue数据变量'
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <!-- 文本框     -->
+    <div>
+      <label for="uname">用户名</label>
+      <input type="text" name="uname" v-model="uname" />
+    </div>
+    <!-- 下拉列表框 -->
+    <div>
+      <label for="">地区:</label>
+      <select v-model="area" id="">
+        <option value="" selected>--请选择地区--</option>
+        <option value="成都">成都</option>
+        <option value="成都">北京</option>
+        <option value="成都">上海</option>
+      </select>
+    </div>
+    <!-- 单选框 -->
+    <div>
+      <label for="">性别:</label>
+      <input type="radio" value="男" v-model="sex">男
+      <input type="radio" value="女" v-model="sex">女
+    </div>
+    <!-- 复选框 -->
+    <div>
+      <label for="">爱好</label>
+      <input type="checkbox" value="吃饭" v-model="hobby">吃饭
+      <input type="checkbox" value="睡觉" v-model="hobby">睡觉
+      <input type="checkbox" value="打豆豆" v-model="hobby">打豆豆
+    </div>
+    <!-- 文本域 -->
+    <div>
+      <textarea v-model="text" id="" cols="30" rows="10"></textarea>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "dataBind",
+  data() {
+    return {
+      uname: "",
+      area: "",
+      sex:'',
+      hobby:[],
+      text:""
+    };
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+# vue双向绑定的原理🔥
+
+>当一个Vue实例创建时，Vue会遍历data选项的属性，用`Object.defineProperty`将它们转化为`getter/setter`并且在内部追踪相关依赖，在属性被访问拒绝和修改时通知变化。每个组件实例都有相应的watcher程序实例，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新。
+
+# v-model修饰符
+
+**语法:** v-model.修饰符="vue数据变量"
+
+-  number  以parseFloat转成数字类型（会自动清除非数字及以后部分\
+- trim 去除首尾空白字符
+- lazy 在change时触发而非input时（一切可以触发change事件的情况，如失焦）
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <label for="">手机号:</label>
+    <input type="text" v-model.trim.number.lazy="phone">
+  </div>
+</template>
+
+<script>
+export default {
+  name:'bindDecription',
+  data(){
+    return{
+      phone:''
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# v-text与v-html
+
+>更新DOM对象的innerText/innerHTML
+
+**语法:** 
+
+- v-text="vue数据变量"
+- v-html="vue数据变量"
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <div v-text="str"></div>
+    <div v-html="str"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name:'insertDemo',
+  data(){
+    return{
+      str:'<span style="color:skyblue">我是一段文本</span>'
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# v-if与v-show
+
+>同: 标签的显示与隐藏
+>
+>异: v-show是给dom元素添加一个display:none属性,该元素还在dom树上,一般应用于切换比较频繁的地方
+>
+>​	  v-if是将该dom元素从dom树上彻底删除,                                                      
+
+**语法:**
+
+- v-show="vue变量"
+- v-if="vue变量"
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <p v-show="false">我是v-show</p>
+    <p v-if="false">我是v-if</p>
+    <div>
+      您是:?
+      <p v-if="age < 18">未成年</p>
+      <p v-else-if="age >= 18 && age < 22">大学生</p>
+      <p v-else>社畜</p>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "isShow",
+  data() {
+    return {
+      age: 17,
+    };
+  },
+};
+</script>
+
+<style>
+</style> 
+```
+
+# v-for
+
+>渲染数据列表
+
+**语法:**
+
+- v-for="值 in 目标结构"
+- v-for="(值,索引) in 目标结构"
+
+**目标结构:**
+
+- 数组
+- 对象
+- 数字
+- 字符串
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <!-- 遍历数组 -->
+    <ul>
+      <li v-for="(value, index) in arr" :key="index">{{ value }}</li>
+    </ul>
+    <!-- 遍历对象 -->
+    <ul>
+      <li v-for="(value, key) in obj" :key="key">{{ value }}---{{ key }}</li>
+    </ul>
+    <!-- 遍历数组对象 -->
+    <ul>
+      <li v-for="value in arr2" :key="value.id">
+        {{ value.id }}---{{ value.name }}
+      </li>
+    </ul>
+    <!-- 遍历数字 -->
+    <ul>
+      <li v-for="(value, index) in num" :key="index">
+        {{ value }}---{{ index }}
+      </li>
+    </ul>
+    <!-- 遍历字符串 -->
+    <ul>
+      <li v-for="(value, index) in str" :Key="index">
+        {{ value }}---{{ index }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "v-for",
+  data() {
+    return {
+      arr: [1, 2, 3],
+      arr2: [
+        { id: 1, name: "一号" },
+        {
+          id: 2,
+          name: "二号",
+        },
+        {
+          id: 3,
+          name: "三号",
+        },
+      ],
+      obj: {
+        name: "张三",
+        age: 18,
+        work: "法外狂徒",
+      },
+      num: 12,
+      str: "hello world",
+    };
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+# v-for与v-if组合使用
+
+当 v-if 与 v-for 一起使用时，v-for 具有比 v-if 更高的优先级。这意味着 v-if 将分别重复运行于 每个 v-for 循环中，即先运行 v-for 的循环，然后在每一个 v-for 的循环中，再进行 v-if 的条件对比，会造成性能问题，影响速度
+
+**解决方法：在v-for前对数组进行筛选**
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <ul>
+      <li v-for="(value,index) in arr.filter(item=>item.name!=='二号')" :key="index">{{value}}</li>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  name:'togetherDemo',
+  data(){
+    return{
+      arr: [
+        { id: 1, name: "一号" },
+        {
+          id: 2,
+          name: "二号",
+        },
+        {
+          id: 3,
+          name: "三号",
+        },
+      ],
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# v-for更新监测
+
+>原因: 当v-for遍历的目标结构改变, `Vue`触发v-for的更新
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <ul>
+      <li v-for="(item,index) in arr" :key="index">{{item}}</li>
+    </ul>
+    <button @click="reverseArr">颠倒数组</button>
+    <button @click="sliceArr">数组截取</button>
+    <button @click="updateArr">更新数组第一个元素</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'updateDemo',
+  data() {
+    return {
+      arr: [1, 2, 3, 4, 5, 6, 7]
+    }
+  },
+  methods: {
+    reverseArr() {
+      this.arr.reverse()
+    },
+    sliceArr() {
+      this.arr.splice(3)
+    },
+    updateArr() {
+      // this.arr[0] = 999 // 为什么显示值修改了 页面没更新???
+      // 应急方案: $.set()强制更新
+      /* 
+        this.$set(参数1， 参数2， 参数3)
+        参数1： 更新的目标结构 - v-for所遍历的数据
+        参数2： 更新数据的位置 - 常常是索引位置
+        参数3： 需要更新的值
+      */
+      // 方案二
+      this.arr.splice(0, 1, 999)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# v-for重要规则🔥
+
+数组对象中，有id就用id，没有id则用索引。如果用id页面报错，则换成索引。
+
+# js数组方法复习
+
+## 不会改变原数组
+
+- map 给数组内的所有元素都执行一次回调函数
+- filter 数组过滤
+- forEach 数组遍历
+- render 累加
+- som 数组内只要有一个元素通过回调函数的测试, 就返回true
+- every 数组内的所有元素都通过回调函数的测试, 就返回true
+- slice 数组截取
+- concat 拼接数组
+- find 返回满足条件的第一个数组元素
+- findIndex 返回满足条件的第一个数组元素的索引
+
+## 会改变原数组
+
+- push 在数组末尾追加一个元素
+- pop 删除数组末尾一个元素
+- unshift 在数组首位追加一个元素
+- shift 删除数组首位元素
+- splice 根据参数的不同,可以实现增 删 改功能 (参数一:开始索引,参数二:几个元素,参数三:替换的元素)
+- sort 数组排序
+- reverse 翻转数组
+- flat 扁平化数组 转一维(flat(Infinity))
+
+#  虚拟dom🔥
+
+>  概念：.vue文件中的template里写的标签, 都是模板(并不是浏览器中看到的真实的dom元素), 都要被vue处理成虚拟DOM**对象**, 才会渲染显示到真实DOM页面上
+
+1. 内存中生成一样的虚拟DOM结构 (==本质是个JS对象==)
+
+    因为真实的DOM属性过多, 没办法快速的知道哪个属性改变了
+
+    比如template里标签结构
+
+    ```vue
+    <template>
+        <div id="box">
+            <p class="my_p">1234</p>
+        </div>
+    </template>
+    ```
+
+    对应的虚拟DOM结构
+
+    ```js
+    const dom = {
+        type: 'div',
+        attributes: [{id: 'box'}],
+        children: {
+            type: 'p',
+            attributes: [{class: 'my_p'}],
+            text: '1234'
+        }
+    }
+    ```
+
+2. vue数据更新
+
+    * 生成新的虚拟DOM结构
+    * 和旧的虚拟DOM结构对比
+    * 利用diff算法, 找不不同, 只更新变化的部分(重绘/回流)到页面
+
+**虚拟DOM优势：**虚拟DOM保存在内存中, 只记录dom关键信息, 配合different算法提高DOM更新的性能
+
+# **你对虚拟DOM的理解？**🔥
+
+**答：**`虚拟DOM`本质上是`JavaScript`对象，是对`真实DOM`的抽象表现。状态变更时，记录新树和旧树的差异，最后把差异更新到真正的`dom`中**render函数**
+
+1. 根据`tagName`生成父标签，读取props，设置属性， `如果有content内容`，设置`innerHtml或innerText`；
+2. 如果存在子元素，遍历子元素递归调用render方法，将生成的子元素依次添加到父元素中，并返回根目录；
+
+你对虚拟DOM的理解？**
+
+**答：**`虚拟DOM`本质上是`JavaScript`对象，是对`真实DOM`的抽象表现。状态变更时，记录新树和旧树的差异，最后把差异更新到真正的`dom`中**render函数**
+
+1. 根据`tagName`生成父标签，读取props，设置属性， `如果有content内容`，设置`innerHtml或innerText`；
+2. 如果存在子元素，遍历子元素递归调用render方法，将生成的子元素依次添加到父元素中，并返回根目录；
+
+
+
+# diff算法 - 同级比较🔥
+
+找不同
+
+> vue用diff算法, 新虚拟dom, 和旧的虚拟dom比较
+
+## 场景1: 根元素变了 =》 删除重建 
+
+旧虚拟DOM
+
+```vue
+<div id="box">
+    <p class="my_p">123</p>
+</div>
+```
+
+新虚拟DOM
+
+```vue
+<ul id="box">
+    <li class="my_p">123</li>
+</ul>
+```
+
+![image-20220602132641608](images/image-20220602132641608.png)
+
+## 场景2: 根元素没变, 属性改变 =》 元素复用, 只更新属性
+
+旧虚拟DOM
+
+```vue
+<div id="box">
+    <p class="my_p">123</p>
+</div>
+```
+
+新虚拟DOM
+
+```vue
+<div id="myBox" title="标题">
+    <p class="my_p">123</p>
+</div>
+```
+
+![image-20220602132718139](images/image-20220602132718139.png)
+
+**问题：**
+
+1. diff算法如何比较新旧虚拟DOM?
+2. 根元素变化?
+3. 根元素未变, 属性改变?
+
+> 思考： 如果标签内子标签/内容改变，diff的算法是如何对应改变的？
+
+# diff算法 - 属性key🔥
+
+**场景3：根元素没变, 子元素没变, 元素内容改变**
+
+## 没有key =》 就地更新
+
+​		v-for不会移动DOM, 而是尝试复用, 就地更新，如果需要v-for移动DOM, 你需要用特殊 attribute `key` 来提供一个排序提示
+
+```vue
+<template>
+  <div>
+    <ul>
+      <li v-for="obj in arr">
+        {{ obj.name }}
+        <input type="text">
+      </li>
+    </ul>
+    <button @click="btn">下标1位置插入新来的</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      arr: [
+        {name: '老大',id: 50},
+        {name: '老二',id: 31},
+        {name: '老三',id: 10}
+      ],
+    };
+  },
+  methods: {
+    btn(){
+      this.arr.splice(1, 0, {
+        id: 19, 
+        name: '新来的'
+      })
+    }
+  }
+};
+</script>
+```
+
+![新_vfor更细_无key_就地更新](images/%E6%96%B0_vfor%E6%9B%B4%E7%BB%86_%E6%97%A0key_%E5%B0%B1%E5%9C%B0%E6%9B%B4%E6%96%B0.gif)
+
+旧 - 虚拟DOM结构  和  新 - 虚拟DOM结构 对比过程
+
+![image-20220602133357264](images/image-20220602133357264.png)
+
+## 有key - 值为索引 => 就地更新
+
+​		因为新旧虚拟DOM对比, key存在就复用此标签更新内容, 如果不存在就直接建立一个新的
+
+key为索引-图解过程 (又就地往后更新了)
+
+![image-20220602133721850](images/image-20220602133721850.png)
+
+1. v-for先循环产生新的DOM结构, key是连续的, 和数据对应
+
+2. 然后比较新旧DOM结构, 找到区别, 打补丁到页面上
+
+    最后补一个li, 然后从第二个往后, 都要更新内容
+
+## 有key - 值为id(不重复的值) => 移动更新
+
+> <font color='red'>key的值只能是唯一不重复的, 字符串或数值</font>
+
+v-for不会移动DOM, 而是尝试复用, 就地更新，如果需要v-for移动DOM, 你需要用特殊 attribute(属性) `key` 来提供一个排序提示
+
+新DOM里数据的key存在, 去旧的虚拟DOM结构里找到key标记的标签, **复用标签**
+
+新DOM里数据的key存在, 去旧的虚拟DOM结构里没有找到key标签的标签, **创建/插入**
+
+旧DOM结构的key, 在新的DOM结构里没有了, 则 **移除key所在的标签**
+
+
+
+```vue
+<template>
+  <div>
+    <ul>
+      <li v-for="obj in arr" :key="obj.id">
+        {{ obj.name }}
+        <input type="text">
+      </li>
+    </ul>
+    <button @click="btn">下标1位置插入新来的</button>
+  </div>
+</template>
+```
+
+![image-20220602134548860](images/image-20220602134548860.png)
+
+> 总结: 不用key也不影响功能(就地更新), 添加key可以提高更新的性能
+
+问题：在实际开发过程中，每次通过v-for进行数据的遍历都得用id吗？
+
+>  答： 数组对象中，有id就用id，没有id则用索引。如果用id页面报错，则换成索引。
+
+# 面试背点02：- 准备找工作前一周拿出来看看理解理解🔥
+
+**问：如何理解Vue中的diff算法？**
+
+**答：**
+
+​		> 找不同！
+
+​		在js中，渲染真是`DOM`的开销是非常大的，比如我们修改了某个数据，如果直接渲染到真实`DOM` ,会引起整个`DOM`树重绘和重排。那么有没有可能实现只更新我们修改的那一小块`DOM`二不要更新整个`DOM`呢?此时我们就需要先根据真实`DOM`生成虚拟`DOM`，当虚拟`DOM`某个节点的数据改变后会生成有一个新的`VNode`，然后新的`VNode`和旧的`VNode`作比较，发现有不一样的地方就直接修改在真实DOM上，然后旧的`VNode`的值为新的`VNode`；
+
+​		**diff**的过程就是调用`patch`函数，比较新旧节点，一边比较一边给真实的`DOM`打补丁，在采用`diff`算法比较新旧节点的时候，比较自会在同层级进行。
+
+
+
+**问：什么是patch函数**
+
+**答：**
+
+​		在`patch`方法中，首先进行树级别的比较`new Vnode`不存在就删除`old VNode`，`old VNode`不存在就增加新的`VNode`都存在就执行`diff`更新，当确定需要执行`diff`算法时，比较两个`VNode`，包括三种类型操作：属性更新，文本更新，子节点更新，新老节点均有子节点，则对子节点进行`diff`操作，调用`updatechidren`如果老节点没有子节点，先清空老节点的文本内容，然后为其新增子节点，如果新节点没有子节点，而老节点有子节点的时候，则移除该节点的所有子节点，老节点都没有子节点的时候，进行文本的替换。
