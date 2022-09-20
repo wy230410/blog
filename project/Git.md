@@ -234,11 +234,9 @@ git commit -m 'update .gitignore'
 7. git reflog 查看所有版本
 8. git reset --hard 版本ID
 
-# copy ↓
+#  本地推送到远端
 
-## 1. 本地推送到远端
-
-### 1.1 HTTPS
+## HTTPS
 
 ```bash
 # 1. 本地初始化仓库，
@@ -256,9 +254,9 @@ git remote add origin https://gitee.com/vrfe/vue-project.git
 git push -u origin master
 ```
 
-### 1.2 SSH密钥
+## SSH密钥
 
-#### 生成公钥
+### 生成公钥
 
 - [官网地址](https://gitee.com/help/articles/4181)
 
@@ -299,14 +297,14 @@ git push
 
 ### 
 
-### 1.3 git clone
+## git clone
 
 ```bash
 git clone <远端地址> 
 # 从远端下载仓库
 ```
 
-### 1.4 Branch
+## Branch
 
 ```bash
 # 查看当前分支列表
@@ -319,7 +317,7 @@ git checkout <分支名>
 git checkout -b <新分支名>
 ```
 
-### 1.5 合并分支
+## 合并分支
 
 1. 先到新分支上 写功能代码， 并提交 
 2. 再切换回要合并的分支， 
@@ -337,14 +335,14 @@ git checkout mater
 git merge login
 ```
 
-### 1.6 删除分支
+##  删除分支
 
 ```bash
 git branch -d <分支名>
 # 注意不能在自己这个分支上， 删除自己！
 ```
 
-### 1.7 解决合并冲突
+##  解决合并冲突
 
 ```bash
 # 1. 不同的分支 
@@ -361,7 +359,7 @@ git commit -m "解决冲突"
 
 ```
 
-### 一些常见的命令
+## 一些常见的linux命令
 
 ```bash
 > ： ==> Ctrl + C 退出
@@ -398,7 +396,7 @@ i 进入编辑模式
 # 清空控制台 clear    cmd ==> cls 
 ```
 
-### 本地分支推送到远端仓库
+## 本地分支推送到远端仓库
 
 ```bash
 git push -u 远端仓库别名 本地分支名：远程分支名（如果想推到远端把远端重命名）
@@ -407,7 +405,7 @@ git push -u 远端仓库别名 本地分支名：远程分支名（如果想推�
 git push -u origin test:test-remote
 ```
 
-### 跟踪分支（检出分支）
+## 跟踪分支（检出分支）
 
 - 也就是基于远端的某个分支， 拷贝一份相同的到本地， 可以重命名以下。
 
@@ -427,7 +425,7 @@ git checkout -b payment origin/pay
 
 ```
 
-### 拉取最新代码
+## 拉取最新代码
 
 ```bash
 # 拉取远程分支最新代码
@@ -438,7 +436,7 @@ git pull
 
 
 
-### 到公司之后的一些操作步骤
+## 到公司之后的一些操作步骤
 
 1. 公司会给你一个gitlab  , 注册。
 2. git clone 将公司的项目代码拉取到本地。
