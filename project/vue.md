@@ -1404,7 +1404,7 @@ export default {
 
 >计算属性也是变量, 如果想要直接赋值, 需要使用完整写法
 >
->有缺陷, 基本用不着
+>有缺陷, 基本用不着, 常用于全选反选
 
 **语法:**
 
@@ -1492,3 +1492,393 @@ export default {
 >缺: 因为缓存机制，计算属性会消耗内存
 >
 >总:  空间换时间
+
+# 监听器watch
+
+>监听变量(data或计算属性),当监听的变量或值发生变化时,就会触发监听器中设置的逻辑 - 一个数据的改变能够影响多个数据的变化
+
+**语法:**
+
+```vue
+// 简单数据类型
+watch:{
+	'被监听的变量(属性)名'(newValue, oldValue){
+		// newValue: 监听这个变量更改后的值
+		// oldValue: 监听这个变量更改前的值
+	}
+}
+// 复杂数据类型(完整写法)
+watch:{
+	'被监听的变量(属性)名':{
+		handler(newValue, oldValue){
+		// newValue: 监听这个变量更改后的值
+		// oldValue: 监听这个变量更改前的值
+		},
+		deep: true // 启动深度监听复杂类型
+		immediate: true // 立即执行 - 当监听器生成时, 就会执行一次handler里面的逻辑
+	}
+}
+```
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <input type="text" v-model="str" />
+    <form action="">
+      <input type="password" v-model="form.pwd" autocomplete='off'>
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "watch-demo",
+  data() {
+    return {
+      str: "",
+      form:{
+        pwd:''
+      }
+    };
+  },
+  watch: {
+    str(newValue, oldValue) {
+      console.log(newValue, oldValue);
+    },
+    'form':{
+      handler(newValue,oldValue){
+        console.log(newValue,oldValue)
+      },
+      deep:true
+    }
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+# 组件
+
+>作用: 将一个页面的代码拆分成多个组件, 这样便于阅读; 可以反复使用同一个组件, 而且反复使用的组件中的数据也是独立的	
+
+**语法:**
+
+```vue
+<template>
+	<!-- 3. 挂载 -->
+	<组件名></组件名>
+</template>
+<script>
+// 1. 引入
+import 自定义组件名 from '组件所在路径'
+export default {
+    name: "foldPanel",
+    components: {
+        // 2.注册
+        自定义组件名:使用的组件名
+        // 一般情况只写一个 名字与值相同
+    }
+}
+</script>
+```
+
+**案例:**
+
+```vue
+<template>
+  <div id="app">
+    <h3>案例：折叠面板</h3>
+    <!-- 3. 挂载 -->
+    <pannel></pannel>
+    <pannel></pannel>
+    <pannel></pannel>
+    <pannel></pannel>
+  </div>
+</template>
+
+
+<script>
+// 1. 引入
+import Pannel from "./pages/pannel.vue";
+export default {
+  name: "foldPanel",
+  components: {
+    // 2. 注册
+    Pannel,
+  },
+};
+</script>
+
+<style lang="less" scoped>
+body {
+  background-color: #ccc;
+  #app {
+    width: 400px;
+    margin: 20px auto;
+    background-color: #fff;
+    border: 4px solid blueviolet;
+    border-radius: 1em;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+    padding: 1em 2em 2em;
+    h3 {
+      text-align: center;
+    }
+    
+  }
+}
+</style>
+```
+
+# 父子组件的通信
+
+**语法:**
+
+```vue
+// 1. 在父组件的挂载标签内以键值对的方式将需要传递的数据写入  注: 可以配合 v-for 大量传递数据
+<Product title="口水鸡" price="99.99" content="开业大酬宾,全场八折"></Product>
+// 2. 在子组件通过props将父组件传递过来的数据接收
+props:['title','price','content']
+```
+
+**案例:**
+
+父组件
+
+```Vue
+<template>
+  <div>
+    <Product
+      title="口水鸡"
+      price="99.99"
+      content="开业大酬宾,全场八折"
+    ></Product>
+    <Product :title="title" :price="price" :content="content"></Product>
+    <Product
+      v-for="(obj, index) in arr"
+      :key="index"
+      :title="obj.title"
+      :price="obj.price"
+      :content="obj.content"
+    ></Product>
+  </div>
+</template>
+
+<script>
+import Product from "./pages/MyProduct.vue";
+export default {
+  name: "product-App",
+  components: {
+    Product,
+  },
+  data() {
+    return {
+      title: "无骨鸡爪",
+      price: 50,
+      content: "超级加倍",
+      arr: [
+        {
+          title: "a1",
+          price: "a2",
+          content: "a3",
+        },
+        {
+          title: "b1",
+          price: "b2",
+          content: "b3",
+        },
+        {
+          title: "c1",
+          price: "c2",
+          content: "c3",
+        },
+      ],
+    };
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+子组件
+
+```vue
+<template>
+  <div class="my-product">
+    <h3>标题: {{title}}</h3>
+    <p>价格: {{price}} 元</p>
+    <p>描述: {{content}}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name:'productPannel',
+  props:['title','price','content']
+};
+</script>
+
+<style>
+.my-product {
+  width: 400px;
+  padding: 20px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  margin: 10px;
+}
+</style>
+```
+
+# 单向数据流
+
+>从父到子的数据流向，叫做单向数据流
+>
+
+**在vue中需要遵循单向数据流原则**
+
+  1. 父组件的数据发生了改变，子组件会自动跟着变
+
+  2. 子组件不能直接修改父组件传递过来的props  props是只读的（这里的只读，是栈内存中的数据只读，可以改堆）**父组件传给子组件的是一个对象，子组件修改对象的属性，是不会报错的，对象是引用类型, 互相更新**
+
+     ```vue
+     <template>
+       <div class="my-product">
+         <h3>标题: {{ title }}</h3>
+         <p>价格: {{ price }}元</p>
+         <p>{{ intro }}</p>
+         <button @click="() => {price--}">宝刀-砍1元</button>
+       </div>
+     </template>
+     ```
+
+# 在子组件修改父组件传递过来对象属性的方式
+
+在子组件的data中, 拷贝一个父组件传递过来的对象, 通过大家都有相同的堆地址, 来间接的修改父组件中的对象参数
+
+**基本语法:**
+
+父组件
+
+```vue
+<template>
+	<Product :obj='obj'></Product>
+</template>
+<script>
+data(){
+	return{
+        obj{
+         title: "a1",
+         price: 20,
+         content: "a3",
+    }
+    }
+}
+</script>
+```
+
+子组件
+
+```vue
+<template>
+	<button @click="objCloon.price--">砍一刀,价格减一</button>
+</template>
+<script>
+props:['obj'],
+data(){
+    return{
+        objCloon:this.obj
+    }
+}
+</script>
+```
+
+# 子父组件通信
+
+> 目标： 从子组件把值传出来给外面使用
+
+**语法:**
+
+子组件
+
+```vue
+<template>
+	<button @click="btn">砍一刀,价格减一,子向父</button>
+</template>
+<script>
+methods:{
+    props:[title],
+	btn(){
+		this.$emit('subPrice',this.title)
+	}
+}
+</script>
+```
+
+父组件
+
+```vue
+<template>
+	 <Product @subPrice='subPriceFn'></Product>
+</template>
+<script>
+data(){
+    return{
+        arr[
+        	{
+        		title:a,
+    			price:20
+    		},
+        	{
+        		title:b,
+        		price:30
+			}
+        ]
+	}
+}
+methods: {
+    subPriceFn(title) {
+      this.arr.forEach((obj) => {
+        if (obj.title === title) obj.price--;
+      });       
+    },
+  },
+</script>
+```
+
+# props进阶用法(work)
+
+**说明：**props也可以作为一个对象，并且可以指定数据类型，必要性，默认值
+
+**语法:**
+
+```vue
+export default {
+	props: {
+        '接收父组件传递过来的属性名': {
+            type: String, // 必填 - 传参类型
+            required: true, // 是否必传（一般也不写，了解）如果没传,只会控制台报错,不影响正常运行
+            default: 'string' // 默认值
+        },
+        b: {
+            type: Array,
+            default: () => []	
+        },
+        c: {
+            type: Object,
+            default: () => ({})
+        }
+    }
+};
+```
+
+# 跨组件传参 - EventBus
+
+为何不使用?
+
+1. 无法精确的确认当前创建的自定义事件是否在之前被使用了，或者有其他用途
+2. 接收方无法确保拿到的数据，是你目标组件发送来的
