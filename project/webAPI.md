@@ -917,6 +917,23 @@ console.log(localStorage.getItem('age'))
 
 # 数组方法🔥
 
+## 不会改变原数组的方法
+
+- arr.forEach 遍历数组
+- arr.map 给每一个数组执行一次回调函数,返回执行完回调函数后的值
+- arr.filter 过滤数组,给每一个元素执行一次回调函数,回调函数返回一个布尔值
+- arr.reduce(回调函数,默认值) 累加器
+- arr.every(fun) 一个数组内的所有元素是否都通过回调函数函数测试
+- arr.some(fun) 一个数组内至少有一个元素通过回调函数测试
+- arr.indexof 从前向后查找是否有满足条件的元素,如果有就返回该元素的索引,没有就返回-1
+- arr.lastIndexof 从后向前查找是否有满足条件的元素,如果有就返回该元素的索引,没有就返回-1
+- arr.includes(元素) 查找数组中是否有该元素,有就返回true,没有就返回false
+- arr.join('') 将数组以参数里的符号分隔为一个字符串
+- arr.find(回调函数)  返回数组中满足回调函数条件的数组元素的**值**
+- arr.findIndex(回调函数) 返回数组中满足回调函数条件的数组元素的**索引**
+
+## 会改变原数组
+
 - arr.unshift(元素) 在数组首位添加元素,返回数组长度
 - arr.shift() 删除数组首位元素,返回数组长度
 - arr.push(元素) 在数组末尾添加元素,返回数组长度
@@ -925,24 +942,12 @@ console.log(localStorage.getItem('age'))
 - arr.slice([start,[end]]) 不传递参数为**浅拷贝**数组,
     - 传一个参数表示截取star到数组结尾并返回新数组,
     - 传两个参数表示截取[start,end)
-- arr.forEach 遍历数组,不改变原数组
-- arr.filter 过滤数组,给每一个元素执行一次回调函数,回调函数的返回一个布尔值,不改变原数组
-- arr.map 给每一个数组执行一次回调函数,返回执行完回调函数后的值,改变原数组
-- arr.indexof 从前向后查找是否有满足条件的元素,如果有就返回该元素的索引,没有就返回-1
-- arr.lastIndexof 从后向前查找是否有满足条件的元素,如果有就返回该元素的索引,没有就返回-1
 - arr.concat(arr1,arr2...) 合并数组 **浅拷贝**
-- arr.find(回调函数)  返回数组中满足回调函数条件的数组元素的**值**
-- arr.findIndex(回调函数) 返回数组中满足回调函数条件的数组元素的**索引**
 - Array.from(arr) 将伪数组转换为真数组
-- arr.includes(元素) 查找数组中是否有该元素,有就返回true,没有就返回false
 - Array.isArray(arr)  判断传递的值是否为一个数组
-- arr.join('') 将数组以参数里的符号分隔为一个字符串
-- arr.reduce(回调函数,默认值) 累加器
 - arr.reverse() 反转数组
 - arr.sort 数组排序
 - arr.toStirng() 数组转字符串
-- arr.every(fun) 一个数组内的所有元素是否都通过fun函数测试
-- arr.some(fun) 一个数组内至少有一个元素通过fun函数测试
 
 # 正则
 
