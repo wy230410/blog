@@ -1492,6 +1492,10 @@ export default {
 >缺: 因为缓存机制，计算属性会消耗内存
 >
 >总:  空间换时间
+>
+> **watch属性监听**是一个对象，键是需要观察的属性，值是对应回调函数，主要用来监听某些特定数据的变化，从而进行某些具体的业务逻辑操作，监听属性的变化，需要在数据变化时执行异步或开销较大的操作使用。
+>
+> **使用场景：**`computed`当一个属性受多个属性影响的时候使用，例：购物车结算功能； `watch`当一条数据影响多条数据的时候使用，例：搜索数据。
 
 # 监听器watch
 
@@ -1882,3 +1886,107 @@ export default {
 
 1. 无法精确的确认当前创建的自定义事件是否在之前被使用了，或者有其他用途
 2. 接收方无法确保拿到的数据，是你目标组件发送来的
+
+# 生命周期
+
+## 初始化之前 - beforeCreate
+
+>创建vue实例, 初始化事件和生命周期函数, 什么事情都不能做
+
+## 初始化之后 -  created
+
+>在created中是最先获取data数据，使用methods方法等的时机
+>
+>**使用场景：** 当处理数据（静态数据，通过网络请求后端获取的数据），注册一些全局事件时，应该设置在created中
+
+## 挂载之前 - beforeMount
+
+>基本与created相同 只是多了虚拟dom
+
+## 挂载之后 - mounted
+
+> 此时真实dom已挂载到页面上，可以执行dom操作, 同时也可以堆数据进行处理
+>
+> **注意事项：**如果你比较懒，同时也不确定是否需要左dom操作，那么直接把逻辑放到mounted里面绝不会错
+
+## 更新之前 - beforeUpdate
+
+>获取不了更新之后的DOM节点
+
+## 更新之后 - updated
+
+>可以获取更新之后的DOM节点
+>
+>**注意:** update阶段会产生无限的更新循环, 所以以后如果需要在数据变化时做业务操作, 用watch监听器来实现
+
+## 销毁之前 - beforeDestory
+
+>**使用场景:** 清除定时器 取消订阅消息 解绑自定义事件等**异步**操作
+
+## 销毁之后 - destoryed
+
+>啥也干不了
+
+# res and refs
+
+##  获取DOM元素
+
+**案例:**
+
+```vue
+<template>
+	<div>
+        <p ref='demo'>
+            hello wrold
+    	</p>
+    </div>
+</template>
+mounted(){
+	console.log(this.$refs.demo)
+}
+```
+
+## 使用子组件的方法与属性
+
+子组件
+
+```vue
+<template>
+	<div>
+        {{msg}}
+    </div>
+</template>
+data(){
+	return{
+		msg:'children'
+	}
+}
+methods:{
+	changMsg(txt){
+		this.msg = txt
+	}
+}
+```
+
+父组件
+
+```vue
+<template>
+	<div>
+        <child ref='child'></child>
+    </div>
+</template>
+import child from 子组件路径
+components:{
+	child
+}
+mounted(){
+    // 虽然可以通过refs将data中的数据读取到父组件中，而且可以通过父组件直接修改当前的数据，但是这种形式非常难于对数据进行规范的	      管理，所以，父组件中读取到的子组件数据只可使用不可修改
+	console.log(this.$refs.child.msg)  
+	//  如果父组件一定要修改子组件的数据，那么子组件中需要暴露出一个专门用于修改某一特定属性的方法， 父组件通过$refs来进行调用		  和修改
+	this.$refs.child.changeMsg('father say')
+}
+```
+
+
+
