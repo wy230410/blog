@@ -1988,5 +1988,214 @@ mounted(){
 }
 ```
 
+# nextTick
 
+>Vue更新DOM-异步的!（数据与页面有延时）
+
+**案例：**点击count++, 马上通过"原生DOM"拿标签内容, 无法拿到新值
+
+```vue
+<template>
+  <div>
+    <p ref="myP">{{ count }}</p>
+    <button @click="btn">count+1</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "nextTickDemo",
+  data() {
+    return {
+      count: 0,
+    };
+  },
+  methods: {
+    btn() {
+      this.count++;
+      console.log("数据中的值", this.count);
+      console.log("页面中的值", this.$refs.myP.innerText);
+
+      // 方案一: 使用setTimeout让后面代码延时执行
+      setTimeout(() => {
+        console.log("页面中的值", this.$refs.myP.innerText);
+      }, 0);
+
+      // 方案二: 使用vue内置方法$nextTick(()=>{ })
+      // 作用: 该方法仅在dom更新后进行触发执行
+      this.$nextTick(() => {
+        console.log("页面中的值", this.$refs.myP.innerText);
+      });
+    },
+  },
+};
+</script>
+
+<style>
+</style>
+```
+
+# 动态组件
+
+>多个组件使用同一个挂载点，并动态切换
+
+**语法:**
+
+```vue
+<template>
+	<component :is="组件名"></component>
+</template>
+```
+
+**案例:**
+
+```vue
+<template>
+  <div>
+    <button
+      @click="
+        flag = true
+        componentName = 'UserName'
+      "
+    >
+      账号密码填写
+    </button>
+    <button
+      @click="
+        flag = false
+        componentName = 'UserInfo'
+      "
+    >
+      个人信息填写
+    </button>
+    <UserName v-if="flag"></UserName>
+    <UserInfo v-else></UserInfo>
+    <hr />
+    <!-- keep-alive组件缓存 -->
+    <keep-alive>
+      <component :is="componentName"></component>
+    </keep-alive>
+  </div>
+</template>
+<script>
+import UserName from '../components/04-userName.vue'
+import UserInfo from '../components/03-userInfo.vue'
+export default {
+  name: 'userDynamic',
+  components: {
+    UserName,
+    UserInfo,
+  },
+  data() {
+    return {
+      flag: true,
+      componentName: 'UserName',
+    }
+  },
+}
+</script>
+<style lang="scss" scoped>
+</style>
+
+```
+
+# 组件缓存
+
+>将动态组件<component></component>放在keep-alive缓存组件中时，在组件切换的过程中，将不会进行销毁
+
+**语法:**
+
+```vue
+<template>
+	<keep-alive>
+		<component :is="组件名"></component>
+    </keep-alive>
+</template>
+```
+
+# keep-alive钩子函数
+
+>被缓存的组件不再创建和销毁, 而是激活和非激活
+>
+>**作用:** 在缓存组件中有些需要进入组件时就需要执行的代码从created和mounted中转换到activated里
+>          在缓存组件中，如果有计时器定时器需要在页面关闭时主动关闭，需要将关闭的代码从beforeDestroy中转换到deactivated里
+
+**生命周期:**
+
+- activated - 激活
+- deactivated - 失去激活状态
+
+**案例:**
+
+```vue
+<script>
+created() {
+    console.log('组件创建了')
+  },
+  mounted() {
+    console.log('页面挂载')
+  },
+  activated() {
+    console.log('组件激活')
+  },
+  deactivated() {
+    console.log('组件失活')
+  },
+  beforeDestroy() {
+    console.log('组件销毁')
+  },
+</script>
+```
+
+# 自定义指令(了解)
+
+## 全局注册 - main.js
+
+**语法:**
+
+```vue
+Vue.directive('自定义指令名称(不带v-)',{
+	inserted(element,binding){ // 当绑定元素插入到父元素中时 - 当前绑定的标签渲染到页面时
+		// element: 当前绑定的元素
+		对该元素进行业务处理
+		// binding 传递过来的参数 
+	},	
+	update(element){ //当标签发生更新时, 会自动触发一下内容
+
+	}
+})
+```
+
+**案例:**
+
+```vue
+// main.js
+Vue.directive('gFocus', {
+  inserted(element,binding) {
+    console.log(binding)
+    element.focus()
+    element.style.color=binding.value
+  }
+})
+// 组件
+<input type="text" v-gFocus="'red'">
+```
+
+## 局部注册
+
+**语法:**
+
+```vue
+directives: {
+        '自定义指令名称（不带v)': {
+          inserted (elemen,bindingt) { // 当绑定元素插入到父元素中时 - 当前绑定的标签渲染到页面时
+            // element: 当前绑定的元素
+            对该元素进行业务处理
+			// binding 传递过来的参数 
+          },
+
+          update (element) { // 当前标签发生更新时，会自定触发一下内容
+          }
+        }
+```
 
