@@ -1887,7 +1887,7 @@ export default {
 1. 无法精确的确认当前创建的自定义事件是否在之前被使用了，或者有其他用途
 2. 接收方无法确保拿到的数据，是你目标组件发送来的
 
-# 生命周期
+# 生命周期🔥
 
 ## 初始化之前 - beforeCreate
 
@@ -2197,5 +2197,182 @@ directives: {
           update (element) { // 当前标签发生更新时，会自定触发一下内容
           }
         }
+```
+
+# slot插槽
+
+>用于实现组件的内容分发, 通过 slot 标签, 可以接收到写在组件标签内的内容
+
+## **基本用法:**
+
+子组件
+
+```vue
+<template>
+  <div>
+    <!-- 按钮标题 -->
+    <div class="title">
+      <h4>芙蓉楼送辛渐</h4>
+      <span class="btn" @click="isShow = !isShow">
+        {{ isShow ? '收起' : '展开' }}
+      </span>
+    </div>
+    <!-- 下拉内容 -->
+    <div class="container" v-show="isShow">
+      <slot>
+        <p>默认内容</p>
+      </slot>
+    </div>
+  </div>
+</template>
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <Panle>
+        <p>寒雨连江夜入吴,</p>
+        <p>平明送客楚山孤。</p>
+        <p>洛阳亲友如相问，</p>
+        <p>一片冰心在玉壶。</p>
+    </Panle>
+    <panle></panle>
+  </div>
+</template>
+```
+
+## 具名插槽
+
+>当一个组件内有2处以上需要外部传入标签的地方，传入的标签可以分别派发给不同的slot位置
+>
+>**注意事项：** 如果父组件中子组件标签内的某些元素没有正确的设置对应插槽名称时，就不会在子组件插槽中生效
+
+子组件
+
+```vue
+<template>
+  <div>
+    <!-- 按钮标题 -->
+    <div class="title">/
+      <h4><slot name="title">默认标题</slot></h4>
+      <span class="btn" @click="isShow = !isShow">
+        {{ isShow ? '收起' : '展开' }}
+      </span>
+    </div>
+    <!-- 下拉内容 -->
+    <div class="container" v-show="isShow">
+      <slot name='content'>
+        <p>默认内容</p>
+      </slot>
+    </div>
+  </div>
+</template>
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <Panle>
+      <template #title> 芙蓉楼送辛渐 </template>
+      <template v-slot:content>
+        <p>寒雨连江夜入吴,</p>
+        <p>平明送客楚山孤。</p>
+        <p>洛阳亲友如相问，</p>
+        <p>一片冰心在玉壶。</p>
+      </template>
+    </Panle>
+    <panle></panle>
+  </div>
+</template>
+```
+
+## 作用域插槽
+
+>让子组件中的某些变量可以提供给父组件使用
+
+子组件
+
+```vue
+<template>
+  <div>
+    <!-- 按钮标题 -->
+    <div class="title">
+      <h4><slot name="title">默认标题</slot></h4>
+      <span class="btn" @click="isShow = !isShow">
+        {{ isShow ? '收起' : '展开' }}
+      </span>
+    </div>
+    <!-- 下拉内容 -->
+    <div class="container" v-show="isShow">
+      <slot name="content" :dataObj="obj" :dataArr="arr">
+        <p>默认内容</p>
+      </slot>
+    </div>
+  </div>
+</template>
+data() {
+    return {
+      isShow: false,
+      obj: {
+        name: '张三',
+        age: 18,
+      },
+      arr: [1, 23, 4, 5],
+    }
+  },
+```
+
+父组件
+
+```vue
+<template>
+  <div>
+    <Panle>
+      <template #title> 芙蓉楼送辛渐 </template>
+      <template v-slot:content="scope">
+        <div>dataObj:{{scope.dataObj}}</div>
+        <div>dataArr:{{scope.dataArr}}</div>
+        <p>寒雨连江夜入吴,</p>
+        <p>平明送客楚山孤。</p>
+        <p>洛阳亲友如相问，</p>
+        <p>一片冰心在玉壶。</p>
+      </template>
+    </Panle>
+    <panle></panle>
+  </div>
+</template>
+```
+
+# veu-router 路由
+
+>在一个同一个页面,切换业务场景,不会刷新页面
+
+**用法:**
+
+```vue
+// 1. 下载vue-router
+npm i vue-router@3.5.1   // 注: vue2
+// 2. 全局引入
+import VueRouter from 'vue-router'
+// 3. 全局注册
+Vue.use(VueRouter)
+// 4. 创建路由规则
+const routes = [
+  {path:路由的唯一路径,component:组件名}
+]
+// 5. 生成路由对象
+const router = new VueRouter({
+  routes
+})
+// 6. 关联到Vue实例
+new Vue({
+  router
+})
+// 7. 设置挂载点 - 当url的hash值路径切换, 显示规则里对应的组件到这
+<router-view></router-view>
 ```
 
